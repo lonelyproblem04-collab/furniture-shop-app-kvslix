@@ -1,0 +1,117 @@
+
+import { Product, Category } from '../types/Product';
+
+export const categories: Category[] = [
+  {
+    id: '1',
+    name: 'Living Room',
+    imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400',
+    productCount: 24,
+  },
+  {
+    id: '2',
+    name: 'Bedroom',
+    imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400',
+    productCount: 18,
+  },
+  {
+    id: '3',
+    name: 'Dining Room',
+    imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
+    productCount: 15,
+  },
+  {
+    id: '4',
+    name: 'Office',
+    imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400',
+    productCount: 12,
+  },
+];
+
+export const featuredProducts: Product[] = [
+  {
+    id: '1',
+    name: 'Modern Sectional Sofa',
+    description: 'Comfortable and stylish sectional sofa perfect for modern living rooms. Features premium fabric upholstery and solid wood frame.',
+    price: 1299,
+    originalPrice: 1599,
+    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600',
+    category: 'Living Room',
+    inStock: true,
+    rating: 4.8,
+    reviewCount: 124,
+    isNew: false,
+    isSale: true,
+  },
+  {
+    id: '2',
+    name: 'Scandinavian Dining Table',
+    description: 'Beautiful oak dining table with clean lines and minimalist design. Seats up to 6 people comfortably.',
+    price: 899,
+    imageUrl: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600',
+    category: 'Dining Room',
+    inStock: true,
+    rating: 4.9,
+    reviewCount: 89,
+    isNew: true,
+    isSale: false,
+  },
+  {
+    id: '3',
+    name: 'Ergonomic Office Chair',
+    description: 'Premium ergonomic office chair with lumbar support and adjustable height. Perfect for long work sessions.',
+    price: 449,
+    imageUrl: 'https://images.unsplash.com/photo-1541558869434-2840d308329a?w=600',
+    category: 'Office',
+    inStock: true,
+    rating: 4.7,
+    reviewCount: 203,
+    isNew: false,
+    isSale: false,
+  },
+  {
+    id: '4',
+    name: 'Platform Bed Frame',
+    description: 'Minimalist platform bed frame made from sustainable bamboo. No box spring required.',
+    price: 599,
+    originalPrice: 799,
+    imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600',
+    category: 'Bedroom',
+    inStock: true,
+    rating: 4.6,
+    reviewCount: 156,
+    isNew: false,
+    isSale: true,
+  },
+  {
+    id: '5',
+    name: 'Vintage Leather Armchair',
+    description: 'Classic leather armchair with vintage styling. Hand-crafted with genuine leather and solid wood frame.',
+    price: 799,
+    imageUrl: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=600',
+    category: 'Living Room',
+    inStock: false,
+    rating: 4.9,
+    reviewCount: 67,
+    isNew: false,
+    isSale: false,
+  },
+  {
+    id: '6',
+    name: 'Glass Coffee Table',
+    description: 'Modern glass coffee table with chrome legs. Perfect centerpiece for contemporary living rooms.',
+    price: 349,
+    imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600',
+    category: 'Living Room',
+    inStock: true,
+    rating: 4.4,
+    reviewCount: 92,
+    isNew: true,
+    isSale: false,
+  },
+];
+
+export const allProducts: Product[] = [
+  ...featuredProducts,
+  // Add more products here as needed
+];

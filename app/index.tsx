@@ -1,52 +1,148 @@
+
 import React, { useState } from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
-import { commonStyles, colors } from '../styles/commonStyles';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SimpleBottomSheet from '../components/BottomSheet';
+import { router } from 'expo-router';
+import { commonStyles, colors } from '../styles/commonStyles';
+import { featuredProducts, categories } from '../data/products';
+import { useCart } from '../hooks/useCart';
+import ProductCard from '../components/ProductCard';
+import CategoryCard from '../components/CategoryCard';
+import SearchBar from '../components/SearchBar';
+import CartButton from '../components/CartButton';
 
+export default function HomeScreen() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const { addToCart, getTotalItems } = useCart();
 
-export default function MainScreen() {
-  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const handleProductPress = (productId: string) => {
+    console.log('Product pressed:', productId);
+    router.push(`/product/${productId}`);
+  };
 
-  const handleOpenBottomSheet = () => {
-    setIsBottomSheetVisible(true);
+  const handleCategoryPress = (categoryId: string) => {
+    console.log('Category pressed:', categoryId);
+    router.push(`/category/${categoryId}`);
+  };
+
+  const handleAddToCart = (product: any) => {
+    console.log('Adding product to cart:', product.name);
+    addToCart(product);
+  };
+
+  const handleCartPress = () => {
+    console.log('Cart button pressed');
+    router.push('/cart');
   };
 
   return (
-      <SafeAreaView style={commonStyles.container}>
-        <View style={commonStyles.content}>
-          <Image
-            source={require('../assets/images/final_quest_240x240.png')}
-            style={{ width: 180, height: 180 }}
-            resizeMode="contain"
-          />
-          <Text style={commonStyles.title}>This is a placeholder app.</Text>
-          <Text style={commonStyles.text}>Your app will be displayed here when it's ready.</Text>
+    <SafeAreaView style={commonStyles.container}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Good morning!</Text>
+          <Text style={commonStyles.title}>Find Your Perfect Furniture</Text>
+        </View>
+        <CartButton itemCount={getTotalItems()} onPress={handleCartPress} />
+      </View>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: colors.primary,
-              paddingHorizontal: 24,
-              paddingVertical: 12,
-              borderRadius: 8,
-              marginTop: 30,
-            }}
-            onPress={handleOpenBottomSheet}
-          >
-            <Text style={{
-              color: colors.text,
-              fontSize: 16,
-              fontWeight: '600',
-            }}>
-              Open Bottom Sheet
-            </Text>
-          </TouchableOpacity>
+      <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="Search furniture..."
+        />
+
+        <View style={commonStyles.section}>
+          <Text style={commonStyles.subtitle}>Categories</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+            {categories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                onPress={() => handleCategoryPress(category.id)}
+              />
+            ))}
+          </ScrollView>
         </View>
 
-        <SimpleBottomSheet
-          isVisible={isBottomSheetVisible}
-          onClose={() => setIsBottomSheetVisible(false)}
-        />
-      </SafeAreaView>
+        <View style={commonStyles.section}>
+          <View style={commonStyles.spaceBetween}>
+            <Text style={commonStyles.subtitle}>Featured Products</Text>
+            <TouchableOpacity onPress={() => router.push('/products')}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <View style={styles.productsGrid}>
+            {featuredProducts.slice(0, 4).map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onPress={() => handleProductPress(product.id)}
+                onAddToCart={() => handleAddToCart(product)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={commonStyles.section}>
+          <Text style={commonStyles.subtitle}>New Arrivals</Text>
+          <View style={styles.productsGrid}>
+            {featuredProducts.filter(p => p.isNew).map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onPress={() => handleProductPress(product.id)}
+                onAddToCart={() => handleAddToCart(product)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={commonStyles.section}>
+          <Text style={commonStyles.subtitle}>Sale Items</Text>
+          <View style={styles.productsGrid}>
+            {featuredProducts.filter(p => p.isSale).map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onPress={() => handleProductPress(product.id)}
+                onAddToCart={() => handleAddToCart(product)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={{ height: 100 }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  greeting: {
+    fontSize: 16,
+    color: colors.textLight,
+    marginBottom: 4,
+  },
+  categoriesScroll: {
+    marginBottom: 8,
+  },
+  productsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  seeAllText: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+});
