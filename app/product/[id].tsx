@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { commonStyles, colors, buttonStyles } from '../../styles/commonStyles';
 import { allProducts } from '../../data/products';
 import { useCart } from '../../hooks/useCart';
+import { formatCurrency, formatCurrencyWithoutDecimals } from '../../utils/currency';
 import Icon from '../../components/Icon';
 import Button from '../../components/Button';
 
@@ -98,9 +99,9 @@ export default function ProductDetailScreen() {
           </View>
 
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>${product.price}</Text>
+            <Text style={styles.price}>{formatCurrencyWithoutDecimals(product.price)}</Text>
             {product.originalPrice && (
-              <Text style={commonStyles.originalPrice}>${product.originalPrice}</Text>
+              <Text style={commonStyles.originalPrice}>{formatCurrencyWithoutDecimals(product.originalPrice)}</Text>
             )}
             {product.originalPrice && (
               <View style={styles.discountBadge}>
@@ -131,7 +132,7 @@ export default function ProductDetailScreen() {
 
           <View style={styles.buttonContainer}>
             <Button
-              text={product.inStock ? `Add to Cart - $${(product.price * quantity).toFixed(2)}` : 'Out of Stock'}
+              text={product.inStock ? `Add to Cart - ${formatCurrency(product.price * quantity)}` : 'Out of Stock'}
               onPress={handleAddToCart}
               style={[
                 buttonStyles.primary,

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { commonStyles, colors, buttonStyles } from '../../styles/commonStyles';
 import { useCart } from '../../hooks/useCart';
+import { formatCurrency, formatCurrencyWithoutDecimals } from '../../utils/currency';
 import Icon from '../../components/Icon';
 import Button from '../../components/Button';
 
@@ -87,7 +88,7 @@ export default function CartScreen() {
             <View style={styles.itemDetails}>
               <Text style={styles.itemName} numberOfLines={2}>{item.product.name}</Text>
               <Text style={styles.itemCategory}>{item.product.category}</Text>
-              <Text style={styles.itemPrice}>${item.product.price}</Text>
+              <Text style={styles.itemPrice}>{formatCurrencyWithoutDecimals(item.product.price)}</Text>
             </View>
 
             <View style={styles.itemControls}>
@@ -115,7 +116,7 @@ export default function CartScreen() {
               </View>
 
               <Text style={styles.itemTotal}>
-                ${(item.product.price * item.quantity).toFixed(2)}
+                {formatCurrency(item.product.price * item.quantity)}
               </Text>
             </View>
           </View>
@@ -124,7 +125,7 @@ export default function CartScreen() {
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Subtotal:</Text>
-            <Text style={styles.summaryValue}>${getTotalPrice().toFixed(2)}</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(getTotalPrice())}</Text>
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Shipping:</Text>
@@ -132,11 +133,11 @@ export default function CartScreen() {
           </View>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Tax:</Text>
-            <Text style={styles.summaryValue}>${(getTotalPrice() * 0.08).toFixed(2)}</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(getTotalPrice() * 0.08)}</Text>
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total:</Text>
-            <Text style={styles.totalValue}>${(getTotalPrice() * 1.08).toFixed(2)}</Text>
+            <Text style={styles.totalValue}>{formatCurrency(getTotalPrice() * 1.08)}</Text>
           </View>
         </View>
 

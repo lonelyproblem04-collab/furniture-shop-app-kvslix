@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Product } from '../types/Product';
 import { colors, commonStyles } from '../styles/commonStyles';
+import { formatCurrencyWithoutDecimals } from '../utils/currency';
 import Icon from './Icon';
 
 interface ProductCardProps {
@@ -45,9 +46,9 @@ export default function ProductCard({ product, onPress, onAddToCart }: ProductCa
         
         <View style={commonStyles.spaceBetween}>
           <View style={commonStyles.row}>
-            <Text style={commonStyles.price}>${product.price}</Text>
+            <Text style={commonStyles.price}>{formatCurrencyWithoutDecimals(product.price)}</Text>
             {product.originalPrice && (
-              <Text style={commonStyles.originalPrice}>${product.originalPrice}</Text>
+              <Text style={commonStyles.originalPrice}>{formatCurrencyWithoutDecimals(product.originalPrice)}</Text>
             )}
           </View>
           
