@@ -10,27 +10,29 @@ import ProductCard from '../../components/ProductCard';
 import SearchBar from '../../components/SearchBar';
 import CartButton from '../../components/CartButton';
 import Icon from '../../components/Icon';
+import Logo from '../../components/Logo';
 
 export default function ProductsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'rating'>('name');
+  const [sortBy, setSortBy] = useState('name');
   const { addToCart, getTotalItems } = useCart();
 
-  const filteredProducts = allProducts
-    .filter(product => 
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price':
-          return a.price - b.price;
-        case 'rating':
-          return b.rating - a.rating;
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
+  const filteredProducts = allProducts.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'name':
+      default:
+        return a.name.localeCompare(b.name);
+    }
+  });
 
   const handleProductPress = (productId: string) => {
     console.log('Product pressed:', productId);
@@ -55,65 +57,70 @@ export default function ProductsScreen() {
   return (
     <SafeAreaView style={commonStyles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>All Products</Text>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+            <Icon name="arrow-left" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Logo size="small" showText={false} />
+        </View>
         <CartButton itemCount={getTotalItems()} onPress={handleCartPress} />
       </View>
 
-      <View style={commonStyles.content}>
+      <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.titleSection}>
+          <Text style={commonStyles.title}>All Products</Text>
+          <Text style={commonStyles.textLight}>{sortedProducts.length} items</Text>
+        </View>
+
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholder="Search products..."
         />
 
-        <View style={styles.sortContainer}>
+        <View style={styles.sortSection}>
           <Text style={styles.sortLabel}>Sort by:</Text>
           <View style={styles.sortButtons}>
-            {[
-              { key: 'name', label: 'Name' },
-              { key: 'price', label: 'Price' },
-              { key: 'rating', label: 'Rating' },
-            ].map((option) => (
-              <TouchableOpacity
-                key={option.key}
-                style={[
-                  styles.sortButton,
-                  sortBy === option.key && styles.sortButtonActive
-                ]}
-                onPress={() => setSortBy(option.key as any)}
-              >
-                <Text style={[
-                  styles.sortButtonText,
-                  sortBy === option.key && styles.sortButtonTextActive
-                ]}>
-                  {option.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            <TouchableOpacity
+              style={[styles.sortButton, sortBy === 'name' && styles.sortButtonActive]}
+              onPress={() => setSortBy('name')}
+            >
+              <Text style={[styles.sortButtonText, sortBy === 'name' && styles.sortButtonTextActive]}>
+                Name
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.sortButton, sortBy === 'price-low' && styles.sortButtonActive]}
+              onPress={() => setSortBy('price-low')}
+            >
+              <Text style={[styles.sortButtonText, sortBy === 'price-low' && styles.sortButtonTextActive]}>
+                Price: Low to High
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.sortButton, sortBy === 'price-high' && styles.sortButtonActive]}
+              onPress={() => setSortBy('price-high')}
+            >
+              <Text style={[styles.sortButtonText, sortBy === 'price-high' && styles.sortButtonTextActive]}>
+                Price: High to Low
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <Text style={styles.resultCount}>
-          {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
-        </Text>
+        <View style={styles.productsGrid}>
+          {sortedProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onPress={() => handleProductPress(product.id)}
+              onAddToCart={() => handleAddToCart(product)}
+            />
+          ))}
+        </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.productsGrid}>
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onPress={() => handleProductPress(product.id)}
-                onAddToCart={() => handleAddToCart(product)}
-              />
-            ))}
-          </View>
-          <View style={{ height: 100 }} />
-        </ScrollView>
-      </View>
+        <View style={{ height: 100 }} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -124,52 +131,55 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.backgroundAlt,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButton: {
     padding: 8,
+    marginRight: 8,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.text,
+  titleSection: {
+    marginBottom: 16,
   },
-  sortContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  sortSection: {
     marginBottom: 16,
   },
   sortLabel: {
-    fontSize: 14,
-    color: colors.textLight,
-    marginRight: 12,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 8,
   },
   sortButtons: {
     flexDirection: 'row',
-    flex: 1,
+    flexWrap: 'wrap',
+    gap: 8,
   },
   sortButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: colors.border,
-    marginRight: 8,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   sortButtonActive: {
     backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   sortButtonText: {
-    fontSize: 12,
-    color: colors.textLight,
-    fontWeight: '500',
+    fontSize: 14,
+    color: colors.text,
   },
   sortButtonTextActive: {
     color: colors.backgroundAlt,
-  },
-  resultCount: {
-    fontSize: 14,
-    color: colors.textLight,
-    marginBottom: 16,
+    fontWeight: '600',
   },
   productsGrid: {
     flexDirection: 'row',

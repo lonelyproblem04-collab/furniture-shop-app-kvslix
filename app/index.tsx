@@ -10,6 +10,7 @@ import ProductCard from '../components/ProductCard';
 import CategoryCard from '../components/CategoryCard';
 import SearchBar from '../components/SearchBar';
 import CartButton from '../components/CartButton';
+import Logo from '../components/Logo';
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,11 +39,13 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={commonStyles.container}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good morning!</Text>
-          <Text style={commonStyles.title}>Find Your Perfect Furniture</Text>
-        </View>
+        <Logo size="medium" showText={true} />
         <CartButton itemCount={getTotalItems()} onPress={handleCartPress} />
+      </View>
+
+      <View style={styles.welcomeSection}>
+        <Text style={styles.greeting}>Good morning!</Text>
+        <Text style={commonStyles.title}>Find Your Perfect Furniture</Text>
       </View>
 
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
@@ -123,9 +126,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: 16,
+    paddingTop: 8,
     paddingBottom: 16,
+    backgroundColor: colors.backgroundAlt,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  welcomeSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   greeting: {
     fontSize: 16,
